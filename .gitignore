@@ -5,3 +5,9 @@ node_modules
 *.vsix
 .obsidian/
 test/
+.vscode/
+src/test/
+src/extension copy 2.ts
+syntaxes/rgset.tmLanguage copy.json
+package-lock.json
+package-lock.json

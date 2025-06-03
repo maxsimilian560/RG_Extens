@@ -3,9 +3,9 @@
   "name": "rg-extens",
   "displayName": "RG_Extens",
   "description": "Extension for the Rinegine engine. Adds syntax for core engine files such as rgset and rgobj. This also helps configure VS code to work correctly with Rinegine",
-  "version": "0.0.6",
+  "version": "0.1.4",
   "engines": {
-    "vscode": "^1.93.0"
+    "vscode": "^1.99.1"
   },
   "repository": {
     "type": "git",
@@ -14,7 +14,9 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": ["*"],
+  "activationEvents": [
+    "*"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "configuration": {
@@ -64,6 +66,9 @@
         "extensions": [
           ".rgset"
         ],
+        "filenames": [
+          "rgset"
+        ],
         "aliases": [
           "rgset"
         ],
@@ -76,6 +81,12 @@
         "scopeName": "source.rgset",
         "path": "./syntaxes/rgset.tmLanguage.json"
       }
+    ],
+    "snippets": [
+      {
+        "language": "rgset",
+        "path": "./snippets/rgset.json"
+      }
     ]
   },
   "scripts": {
@@ -87,15 +98,18 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/mocha": "^10.0.7",
-    "@types/node": "20.x",
-    "@types/vscode": "^1.93.0",
-    "@typescript-eslint/eslint-plugin": "^8.3.0",
-    "@typescript-eslint/parser": "^8.3.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.15.11",
+    "@types/vscode": "^1.99.1",
+    "@typescript-eslint/eslint-plugin": "^8.32.0",
+    "@typescript-eslint/parser": "^8.32.0",
     "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1",
-    "eslint": "^9.9.1",
-    "typescript": "^5.5.4"
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.26.0",
+    "typescript": "^5.8.3"
   },
-  "dependencies": {  }
+  "dependencies": {
+    "punycode": "^2.3.1",
+    "rg-extens": "file:"
+  }
 }

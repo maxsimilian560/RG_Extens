@@ -1,29 +1,17 @@
 import * as vscode from "vscode";
-//import * as path from "path";
 
-//let globalContext: vscode.ExtensionContext;
+const isWindows = process.platform === 'win32';
+const isLinux = process.platform === 'linux';
+const isMac = process.platform === 'darwin';
+let OS = 0;
+if (isWindows) { OS = 0; } else if (isLinux) { OS = 1; } else if (isMac) { OS = 2; }
 
-/*
-${config:rg-extens.rineginePath}\\
-${config:rg-extens.rineginePath}\\other\\GLFW\\64\\include
-${config:rg-extens.rineginePath}\\other\\FreeType\\64\\include\\freetype2
-${config:rg-extens.rineginePath}\\other\\GLAD\\33\\include
-${config:rg-extens.rineginePath}\\other\\stb_master 
-${config:rg-extens.rineginePath}\\other\\OpenAL\\64\\include 
-${config:rg-extens.rineginePath}\\other\\CURL\\64\\include
-${config:rg-extens.rineginePath}\\compiler\\mingw64\\lib\\gcc\\x86_64-w64-mingw32\\13.2.0\\include\\c++
-${config:rg-extens.rineginePath}\\compiler\\mingw64\\lib\\gcc\\x86_64-w64-mingw32\\13.2.0\\include\\c++\\x86_64-w64-mingw32
-*/
 function showTemporaryMessage(message: string, duration: number) {
-  // Показать информационное сообщение
   const messageItem = vscode.window.showInformationMessage(message);
-
-  // Установить таймер для автоматического закрытия
   setTimeout(() => {
     if (messageItem) {
       messageItem.then(item => {
         if (item) {
-          // Закрыть сообщение, если оно всё ещё отображается
           vscode.commands.executeCommand('workbench.action.closeMessages');
         }
       });
@@ -32,35 +20,24 @@ function showTemporaryMessage(message: string, duration: number) {
 }
 
 async function updateIncludePath(rgpath = "") {
-  vscode.window.showInformationMessage(
-    `Попытка добавить необходимые пути заголовочных фалов.`
-  );
   const config = vscode.workspace.getConfiguration("C_Cpp");
   let includePaths = config.get<string[]>("default.includePath") || [];
-  //let includePaths = rgpath;
   if (!rgpath) {
     vscode.window.showInformationMessage(`Error Code 404`);
     return;
   }
   const rineginePath = "${config:rg-extens.rineginePath}";
-
-
-  // Получение настроек C/C++ расширения
-
-  // Получаем текущий массив includePath
-
-  // Путь, который нужно добавить
-
-  // Проверяем, есть ли путь уже в настройках
   let countReady = 0;
   let paths = [
     rineginePath + '\\',
-    rineginePath + '\\other\\GLFW\\64\\include',
-    rineginePath + '\\other\\FreeType\\64\\include\\freetype2',
-    rineginePath + '\\other\\GLAD\\33\\include',
-    rineginePath + '\\other\\stb_master ',
-    rineginePath + '\\other\\OpenAL\\64\\include ',
-    rineginePath + '\\other\\CURL\\64\\include',
+    rineginePath + '\\include\\64',
+    rineginePath + '\\include\\64\\GLFW',
+    rineginePath + '\\include\\64\\FreeType',
+    rineginePath + '\\include\\64\\FreeType\\freetype2',
+    rineginePath + '\\include\\64\\33',
+    rineginePath + '\\include\\64\\stb_master ',
+    rineginePath + '\\include\\64\\OpenAL ',
+    rineginePath + '\\include\\64\\CURL',
     rineginePath + '\\compiler\\mingw64\\lib\\gcc\\x86_64-w64-mingw32\\13.2.0\\include\\c++',
     rineginePath + '\\compiler\\mingw64\\lib\\gcc\\x86_64-w64-mingw32\\13.2.0\\include\\c++\\x86_64-w64-mingw32'];
 
@@ -69,8 +46,25 @@ async function updateIncludePath(rgpath = "") {
       includePaths.push(paths[i]);
     } else { countReady++; }
   }
+
+  //for turn on all hints
+  let compilerArgs = config.get<string[]>("default.compilerArgs") || [];
+  let args = [
+    '-DRG_ALL_MODULS',
+    '-DRG_ADDONS',
+    '-DRG_ALL_ADDONS'
+  ]
+  for (let i = 0; i < args.length; i++) {
+    if (!compilerArgs.includes(args[i])) {
+      compilerArgs.push(args[i]);
+    }
+  }
+  await config.update(
+    "default.compilerArgs",
+    compilerArgs,
+    vscode.ConfigurationTarget.Global
+  );
   if (countReady == paths.length) {
-    vscode.window.showInformationMessage("Все пути уже были добавлены!");
     return;
   } else if (countReady == 0) {
     vscode.window.showInformationMessage("Все необходимые пути добавлены!");
@@ -82,35 +76,20 @@ async function updateIncludePath(rgpath = "") {
     includePaths,
     vscode.ConfigurationTarget.Global
   );
-
-  vscode.window.showInformationMessage(
-    `Пути успешно настроенны!.`
-  );
-
-  // Обновляем настройку includePath
-
-
 }
+
 
 export function activate(context: vscode.ExtensionContext) {
   const rineginePath = vscode.workspace
     .getConfiguration("rg-extens")
     .get<string>("rineginePath");
 
-  //globalContext = context;
-  // Проверка на наличие пути к движку Rinegine при запуске расширения
-  /*const rineginePath = vscode.workspace
-    .getConfiguration("rg-extens")
-    .get<string>("rineginePath");*/
-
-  // Проверка пути при активации расширения
   if (!rineginePath || !isValidRineginePath(rineginePath)) {
-    showRineginePathNotification(); // Показать уведомление о том, что путь не указан
+    showRineginePathNotification();
   } else {
     updateIncludePath(rineginePath);
   }
 
-  // Команда для ручного изменения пути к движку
   let setRineginePath = vscode.commands.registerCommand(
     "rg-extens.setRineginePath",
     async () => {
@@ -118,36 +97,17 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  // Функция для запуска сборки в терминале
-  /*function runBuildCommand(command: string) {
-    const terminal = vscode.window.createTerminal("RG Build"); // Создаём новый терминал
-    terminal.show(); // Показываем терминал
-    terminal.sendText(command); // Отправляем команду на выполнение
-  }*/
   function runBuildCommand(command: string) {
-
-
     const terminalName = "RG Build";
-
-    // Ищем терминал с именем "RG Build"
     let rgTerminal = vscode.window.terminals.find(term => term.name === terminalName);
-
-    // Если терминал не существует, создаем новый
     if (!rgTerminal) {
       rgTerminal = vscode.window.createTerminal(terminalName);
       rgTerminal.show();
       vscode.window.showInformationMessage(`Терминал ${terminalName} создан.`);
     }
-
-    // Показываем терминал и выполняем команду
-    //rgTerminal.show();
-    //rgTerminal.sendText(`"${buildCommand}"`); // Выполняем команду в терминале
-    //rgTerminal.show(); // Показываем терминал
-    rgTerminal.sendText(command); // Отправляем команду на выполнение
-
+    rgTerminal.sendText(command);
   }
 
-  // Команда для сборки 64-битной версии движка
   let buildEngine64 = vscode.commands.registerCommand(
     "rg-extens.buildEngine",
     () => {
@@ -159,21 +119,18 @@ export function activate(context: vscode.ExtensionContext) {
       if (rineginePath && isValidRineginePath(rineginePath)) {
         const workspaceFolders = vscode.workspace.workspaceFolders;
         if (workspaceFolders) {
-          //const projectRoot = workspaceFolders[0].uri.fsPath;
           const buildCommand = `${rineginePath}\\bin\\rgcmd.exe`;
-          const fullCommand = `"${buildCommand}"`; // Команда для 64-битной сборки
-          runBuildCommand(`${buildCommand}`); // Выполняем команду в терминале из корня проекта
+          const fullCommand = `"${buildCommand}"`;
+          runBuildCommand(`${buildCommand}`);
         } else {
           vscode.window.showErrorMessage("Проект не открыт.");
         }
       } else {
-        showRineginePathNotification(); // Показать уведомление, если путь не установлен или некорректен
+        showRineginePathNotification();
       }
     }
   );
-  
 
-  // Команда для сборки 32-битной версии движка
   let buildEngine32 = vscode.commands.registerCommand(
     "rg-extens.buildEngine32",
     () => {
@@ -185,23 +142,21 @@ export function activate(context: vscode.ExtensionContext) {
       if (rineginePath && isValidRineginePath(rineginePath)) {
         const workspaceFolders = vscode.workspace.workspaceFolders;
         if (workspaceFolders) {
-          //const projectRoot = workspaceFolders[0].uri.fsPath;
           const buildCommand = `${rineginePath}\\bin\\rgcmd32.exe`;
-          runBuildCommand(`${buildCommand}`); // Выполняем команду в терминале из корня проекта
+          runBuildCommand(`${buildCommand}`);
         } else {
           vscode.window.showErrorMessage("Проект не открыт.");
         }
       } else {
-        showRineginePathNotification(); // Показать уведомление, если путь не установлен или некорректен
+        showRineginePathNotification();
       }
     }
   );
-  
+
   let debugDeleteRinegineVariable = vscode.commands.registerCommand(
     "rg-extens.debugDeleteRinegineVariable",
     async () => {
       try {
-        // Сбрасываем переменную rineginePath
         await vscode.workspace
           .getConfiguration("rg-extens")
           .update("rineginePath", undefined, vscode.ConfigurationTarget.Global);
@@ -218,16 +173,66 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(buildEngine64);
   context.subscriptions.push(buildEngine32);
   context.subscriptions.push(debugDeleteRinegineVariable);
+
+  context.subscriptions.push(
+    vscode.languages.registerCompletionItemProvider('rgset', {
+      provideCompletionItems(document, position) {
+        const linePrefix = document.lineAt(position).text.substr(0, position.character);
+        const completions: vscode.CompletionItem[] = [];
+
+        if (linePrefix.match(/mode\s*{/)) {
+          const modes = [
+            'console', 'other_cmd', 'utf', 'createlib', 'debug',
+            'shared', 'static', 'asm', 'clear'
+          ];
+          modes.forEach(mode => {
+            const item = new vscode.CompletionItem(mode, vscode.CompletionItemKind.Keyword);
+            item.detail = `Mode: ${mode}`;
+            completions.push(item);
+          });
+        }
+
+        if (linePrefix.match(/var\s*{/)) {
+          const variables = [
+            'name', 'name32', 'bit', 'resource', 'source', 'run',
+            'compilator', 'compilator32', 'libs', 'libs32', 'include',
+            'include32', 'flags', 'flags32', 'link', 'link32', 'extension'
+          ];
+          variables.forEach(variable => {
+            const item = new vscode.CompletionItem(`${variable} = `, vscode.CompletionItemKind.Variable);
+            item.detail = `Variable: ${variable}`;
+            completions.push(item);
+          });
+        }
+
+        ['true', 'false', '32', '64', 'all'].forEach(value => {
+          const item = new vscode.CompletionItem(value, vscode.CompletionItemKind.Value);
+          item.detail = `Value: ${value}`;
+          completions.push(item);
+        });
+
+        const flags = [
+          'RINEGINE_FOL', 'NAME', 'BIT', 'SOURCE', 'NAME32', 'RESOURCE', 'RUN',
+          'COMPILATOR', 'COMPILATOR32', 'LIBS', 'LIBS32', 'INCLUDE', 'INCLUDE32',
+          'FLAGS', 'FLAGS32', 'LINK', 'LINK32', 'COMPILATOR_FOL', 'COMPILATOR_FOL32', 'PROJECT_FOL'
+        ];
+        flags.forEach(flag => {
+          const item = new vscode.CompletionItem(`{${flag}}`, vscode.CompletionItemKind.Variable);
+          item.detail = `Flag: ${flag}`;
+          completions.push(item);
+        });
+
+        return completions;
+      }
+    }, ' ', '\t')
+  );
 }
 
-
 function showRineginePathNotification() {
-  // Вызываем всплывающее окно с предложением выбрать путь
   const message =
     'Путь до Rinegine не определен. Нажмите "Определить", чтобы выбрать путь.';
   vscode.window.showWarningMessage(message, "Определить").then((selection) => {
     if (selection === "Определить") {
-      // Повторный вызов функции для запроса пути
       promptForRineginePath();
     }
   });
@@ -235,7 +240,6 @@ function showRineginePathNotification() {
 }
 
 async function promptForRineginePath() {
-  // Запрашиваем путь у пользователя
   const selectedFolder = await vscode.window.showOpenDialog({
     canSelectFolders: true,
     canSelectFiles: false,
@@ -243,13 +247,11 @@ async function promptForRineginePath() {
     openLabel: "Выберите папку Rinegine",
   });
 
-  // Проверяем, что путь указан
   if (selectedFolder && selectedFolder[0]) {
     const manualPath = selectedFolder[0].fsPath;
 
     if (isValidRineginePath(manualPath)) {
       try {
-        // Обновляем конфигурацию
         await vscode.workspace
           .getConfiguration("rg-extens")
           .update(
@@ -263,7 +265,6 @@ async function promptForRineginePath() {
         updateIncludePath("rineginePath");
 
       } catch (error) {
-        // Обрабатываем ошибку сохранения
         if (error instanceof Error) {
           vscode.window.showErrorMessage(
             `Ошибка сохранения пути: ${error.message}`
@@ -273,19 +274,15 @@ async function promptForRineginePath() {
             "Неизвестная ошибка при сохранении пути."
           );
         }
-        // Если произошла ошибка, повторно показываем окно для выбора пути
         showRineginePathNotification();
       }
     } else {
-      // Неверный путь, уведомление об ошибке
       vscode.window.showErrorMessage(
-        "Указанный путь неверен. Путь должен заканчиваться на \\Rinegine\\ или \\Rinegine."
+        "Указанный путь неверен. Путь должен указывать на Rinegine."
       );
-      // Повторно показываем уведомление о необходимости выбора пути
       showRineginePathNotification();
     }
   } else {
-    // Если путь не был указан, выводим ошибку и повторно вызываем уведомление
     vscode.window.showErrorMessage(
       "Путь не был указан. Пожалуйста, введите корректный путь."
     );
@@ -293,32 +290,23 @@ async function promptForRineginePath() {
   }
 }
 
-// Проверка, что путь корректен (заканчивается на \Rinegine\ или \Rinegine)
 function isValidRineginePath(rineginePath: string): boolean {
-  return (
-    rineginePath.endsWith("\\Rinegine") || rineginePath.endsWith("\\Rinegine\\")
-  );
+  if (isWindows) {
+    return (
+      rineginePath.endsWith("\\Rinegine") || rineginePath.endsWith("\\Rinegine\\") || rineginePath.endsWith("/Rinegine") || rineginePath.endsWith("/Rinegine/")
+    );
+  }
+  else if (isLinux) {
+    return (
+      rineginePath.endsWith("\\\\Rinegine") || rineginePath.endsWith("\\\\Rinegine\\\\") || rineginePath.endsWith("/Rinegine") || rineginePath.endsWith("/Rinegine/")
+    );
+  } else if (isMac) {
+    console.log("Mac is not supported yet");
+    vscode.window.showInformationMessage("Mac is not supported yet");
+    return false;
+  }
+
+  return false;
 }
-/*
-function debugDeleteRinegineVariable() {
-  let resetRineginePath = vscode.commands.registerCommand(
-    "rg-extens.resetRineginePath",
-    async () => {
-      try {
-        // Сбрасываем переменную rineginePath
-        await vscode.workspace
-          .getConfiguration("rg-extens")
-          .update("rineginePath", undefined, vscode.ConfigurationTarget.Global);
-        vscode.window.showInformationMessage(
-          "Переменная RineginePath успешно сброшена."
-        );
-      } catch (error) {
-        vscode.window.showErrorMessage("Ошибка при сбросе пути Rinegine.");
-      }
-    }
-  );
-  
-    globalContext.subscriptions.push(resetRineginePath);
-  
-}*/
+
 export function deactivate() { }

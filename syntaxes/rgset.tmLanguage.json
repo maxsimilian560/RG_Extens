@@ -1,17 +1,115 @@
 {
-  "scopeName": "source.rgset",
+  "name": "rgset",
   "patterns": [
-    {
-      "name": "keyword.other.rgset",
-      "match": "\\b(clear|createlib|otherCMD|consol|debug|shared|static|utf|asm)\\b"
+    { "include": "#comments" },
+    { "include": "#keywords" },
+    { "include": "#modes" },
+    { "include": "#variables" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#booleans" },
+    { "include": "#adjuster-flags" },
+    { "include": "#operators" },
+    { "include": "#punctuation" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.rgset",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.rgset",
+          "begin": "/\\*",
+          "end": "\\*/",
+          "patterns": [
+            {
+              "include": "#comments"
+            }
+          ]
+        }
+      ]
     },
-    {
-      "name": "variable.other.rgset",
-      "match": "\\b(name|name32|bit|resource|source|run|compilator|compilator32|libs|libs32|includes|includes32|flags|flags32|link|link32|extension)\\b"
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.rgset",
+          "match": "\\b(set|add|mode|var|module|addons)\\b"
+        }
+      ]
     },
-    {
-      "name": "support.variable.rgset",
-      "match": "\\{(NAME|NAME32|BIT|RESOURCE|SOURCE|RUN|COMPILATOR|COMPILATOR32|LIBS|LIBS32|INCLUDES|INCLUDES32|FLAGS|FLAGS32|LINK|LINK32|COMPILATOR_FOL|COMPILATOR_FOL32|PROJECT_FOL|RINEGINE_FOL)\\}"
+    "modes": {
+      "patterns": [
+        {
+          "name": "keyword.other.mode.rgset",
+          "match": "\\b(console|other_cmd|utf|createlib|debug|shared|static|asm|clear|graph|addons|network|sound|neural|experemental|fps_cam|web_server|joystick|mod_manager|useless_addon|pov_cam|lang|player|tests|parser|mem_limit|debug|debug_always_update|pause|no_useless_warning|debug_log|atlas_gen)\\b"
+        }
+      ]
+    },
+    "variables": {
+      "patterns": [
+        {
+          "name": "variable.language.rgset",
+          "match": "\\b(name|name32|bit|resource|source|run|compilator|compilator32|libs|libs32|include|include32|flags|flags32|link|link32|extension)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.rgset",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.rgset",
+          "match": "\\\\."
+        },
+        {
+          "name": "support.variable.rgset",
+          "match": "\\{[A-Z_]+\\}"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.rgset",
+          "match": "\\b\\d+\\b"
+        }
+      ]
+    },
+    "booleans": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.rgset",
+          "match": "\\b(true|false)\\b"
+        }
+      ]
+    },
+    "adjuster-flags": {
+      "patterns": [
+        {
+          "name": "support.variable.rgset",
+          "match": "\\{[A-Z_]+\\}"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.assignment.rgset",
+          "match": "="
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.definition.block.rgset",
+          "match": "[{}(),]"
+        }
+      ]
     }
-  ]
+  },
+  "scopeName": "source.rgset"
 }

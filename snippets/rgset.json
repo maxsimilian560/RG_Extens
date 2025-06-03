@@ -1,0 +1,407 @@
+{
+  "Basic rgset configuration": {
+    "prefix": "rgset",
+    "body": [
+      "set {",
+      "  mode {",
+      "    $1",
+      "  },",
+      "  var {",
+      "    $2",
+      "  }",
+      "}"
+    ],
+    "description": "Basic rgset configuration template"
+  },
+  "Mode: module": {
+    "prefix": "module",
+    "body": "module{$1}",
+    "description": "Body to include modules"
+  },
+  "Mode: set": {
+    "prefix": "set",
+    "body": "set{$1}",
+    "description": "Body to main vars and modes"
+  },
+  "Mode: var": {
+    "prefix": "var",
+    "body": "var{$1}",
+    "description": "Body into set, main to variables"
+  },
+  "Mode: mods": {
+    "prefix": "mods",
+    "body": "mode{$1}",
+    "description": "Body into set, main to mods"
+  },
+  "Mode: add": {
+    "prefix": "add",
+    "body": "add{$1}",
+    "description": "Like set, but add"
+  },
+  "Mode: graph": {
+    "prefix": "graph",
+    "body": "graph",
+    "description": "Include module graph"
+  },
+  "Mode: addons": {
+    "prefix": "addons",
+    "body": "addons",
+    "description": "Include module addons"
+  },
+  "Mode: network": {
+    "prefix": "network",
+    "body": "network",
+    "description": "Include module network"
+  },
+  "Mode: sound": {
+    "prefix": "sound",
+    "body": "sound",
+    "description": "Include module sound"
+  },
+  "Mode: neural": {
+    "prefix": "neural",
+    "body": "neural",
+    "description": "Include module neural"
+  },
+  "Mode: experemental": {
+    "prefix": "experemental",
+    "body": "experemental",
+    "description": "Include module experemental"
+  },
+  "Mode: fps_cam": {
+    "prefix": "fps_cam",
+    "body": "fps_cam",
+    "description": "Include module fps_cam"
+  },
+  "Mode: web_server": {
+    "prefix": "web_server",
+    "body": "web_server",
+    "description": "Include module web_server"
+  },
+  "Mode: joystick": {
+    "prefix": "joystick",
+    "body": "joystick",
+    "description": "Include module joystick"
+  },
+  "Mode: mod_manager": {
+    "prefix": "mod_manager",
+    "body": "mod_manager",
+    "description": "Include module mod_manager"
+  },
+  "Mode: useless_addon": {
+    "prefix": "useless_addon",
+    "body": "useless_addon",
+    "description": "Include module useless_addon"
+  },
+  "Mode: pov_cam": {
+    "prefix": "pov_cam",
+    "body": "pov_cam",
+    "description": "Include module pov_cam"
+  },
+  "Mode: lang": {
+    "prefix": "lang",
+    "body": "lang",
+    "description": "Include module lang"
+  },
+  "Mode: player": {
+    "prefix": "player",
+    "body": "player",
+    "description": "Include module player"
+  },
+  "Mode: tests": {
+    "prefix": "tests",
+    "body": "tests",
+    "description": "Include module tests"
+  },
+  "Mode: parser": {
+    "prefix": "parser",
+    "body": "parser",
+    "description": "Include module parser"
+  },
+  "Mode: mem_limit": {
+    "prefix": "mem_limit",
+    "body": "mem_limit",
+    "description": "Include module mem_limit"
+  },
+  "Mode: debug_always_update": {
+    "prefix": "debug_always_update",
+    "body": "debug_always_update",
+    "description": "Include module debug_always_update"
+  },
+  "Mode: pause": {
+    "prefix": "pause",
+    "body": "pause",
+    "description": "Include module pause"
+  },
+  "Mode: no_useless_warning": {
+    "prefix": "no_useless_warning",
+    "body": "no_useless_warning",
+    "description": "Include module no_useless_warning"
+  },
+  "Mode: debug_log": {
+    "prefix": "debug_log",
+    "body": "debug_log",
+    "description": "Include module debug_log"
+  },
+  "Mode: atlas_gen": {
+    "prefix": "atlas_gen",
+    "body": "atlas_gen",
+    "description": "Include module atlas_gen"
+  },
+
+  "Mode: console": {
+    "prefix": "console",
+    "body": "console",
+    "description": "Enables console output"
+  },
+  "Mode: other_cmd": {
+    "prefix": "other_cmd",
+    "body": "other_cmd",
+    "description": "Runs the program in a new CMD window"
+  },
+  "Mode: utf": {
+    "prefix": "utf",
+    "body": "utf",
+    "description": "Enables UTF encoding"
+  },
+  "Mode: createlib": {
+    "prefix": "createlib",
+    "body": "createlib",
+    "description": "Creates a library instead of an executable"
+  },
+  "Mode: debug": {
+    "prefix": "debug",
+    "body": "debug",
+    "description": "Enables debug mode"
+  },
+  "Mode: shared": {
+    "prefix": "shared",
+    "body": "shared",
+    "description": "Creates a shared (dynamic) library"
+  },
+  "Mode: static": {
+    "prefix": "static",
+    "body": "static",
+    "description": "Creates a static library"
+  },
+  "Mode: asm": {
+    "prefix": "asm",
+    "body": "asm",
+    "description": "Enables assembling of assembler files"
+  },
+  "Mode: clear": {
+    "prefix": "clear",
+    "body": "clear",
+    "description": "Clears almost all variables and modes"
+  },
+  "Variable: name": {
+    "prefix": "name",
+    "body": "name = \"$1\"",
+    "description": "Sets the name for the 64-bit output file"
+  },
+  "Variable: name32": {
+    "prefix": "name32",
+    "body": "name32 = \"{NAME}-x32\"",
+    "description": "Sets the name for the 32-bit output file"
+  },
+  "Variable: bit": {
+    "prefix": "bit",
+    "body": "bit = $1",
+    "description": "Sets the bit depth (32, 64, all)"
+  },
+  "Variable: resource": {
+    "prefix": "resource",
+    "body": "resource = \"$1\"",
+    "description": "Sets the resource file (e.g., resource.rc)"
+  },
+  "Variable: source": {
+    "prefix": "source",
+    "body": "source = \"$1\"",
+    "description": "Specifies the .cpp file for compilation"
+  },
+  "Variable: run": {
+    "prefix": "run",
+    "body": "run = $1",
+    "description": "Run after compilation (32, 64, false)"
+  },
+  "Variable: compilator": {
+    "prefix": "compilator",
+    "body": "compilator = \"{RINEGINE_FOL}\\\\compiler\\\\mingw64\\\\bin\\\\g++\"",
+    "description": "Path to the 64-bit compiler"
+  },
+  "Variable: compilator32": {
+    "prefix": "compilator32",
+    "body": "compilator32 = \"{RINEGINE_FOL}\\\\compiler\\\\mingw32\\\\bin\\\\g++\"",
+    "description": "Path to the 32-bit compiler"
+  },
+  "Variable: libs": {
+    "prefix": "libs",
+    "body": "libs = \"$1\"",
+    "description": "Linker flags for 64-bit libraries"
+  },
+  "Variable: libs32": {
+    "prefix": "libs32",
+    "body": "libs32 = \"$1\"",
+    "description": "Linker flags for 32-bit libraries"
+  },
+  "Variable: include": {
+    "prefix": "include",
+    "body": "include = \"$1\"",
+    "description": "Compiler include flags for 64-bit"
+  },
+  "Variable: include32": {
+    "prefix": "include32",
+    "body": "include32 = \"$1\"",
+    "description": "Compiler include flags for 32-bit"
+  },
+  "Variable: flags": {
+    "prefix": "flags",
+    "body": "flags = \"$1\"",
+    "description": "Compiler flags for 64-bit"
+  },
+  "Variable: flags32": {
+    "prefix": "flags32",
+    "body": "flags32 = \"$1\"",
+    "description": "Compiler flags for 32-bit"
+  },
+  "Variable: link": {
+    "prefix": "link",
+    "body": "link = \"$1\"",
+    "description": "Linker flags for 64-bit"
+  },
+  "Variable: link32": {
+    "prefix": "link32",
+    "body": "link32 = \"{LINK}\"",
+    "description": "Linker flags for 32-bit"
+  },
+  "Variable: extension": {
+    "prefix": "extension",
+    "body": "extension = \"$1\"",
+    "description": "File extension for the output file"
+  },
+  "Value: true": {
+    "prefix": "true",
+    "body": "true",
+    "description": "Boolean true"
+  },
+  "Value: false": {
+    "prefix": "false",
+    "body": "false",
+    "description": "Boolean false"
+  },
+  "Value: 32": {
+    "prefix": "32",
+    "body": "32",
+    "description": "32-bit value"
+  },
+  "Value: 64": {
+    "prefix": "64",
+    "body": "64",
+    "description": "64-bit value"
+  },
+  "Value: all": {
+    "prefix": "all",
+    "body": "all",
+    "description": "All bit depths"
+  },
+  "Flag: RINEGINE_FOL": {
+    "prefix": "{RINEGINE_FOL}",
+    "body": "{RINEGINE_FOL}",
+    "description": "Path to the Rinegine installation"
+  },
+  "Flag: NAME": {
+    "prefix": "{NAME}",
+    "body": "{NAME}",
+    "description": "References the 'name' variable"
+  },
+  "Flag: BIT": {
+    "prefix": "{BIT}",
+    "body": "{BIT}",
+    "description": "References the 'bit' variable"
+  },
+  "Flag: SOURCE": {
+    "prefix": "{SOURCE}",
+    "body": "{SOURCE}",
+    "description": "References the 'source' variable"
+  },
+  "Flag: NAME32": {
+    "prefix": "{NAME32}",
+    "body": "{NAME32}",
+    "description": "References the 'name32' variable"
+  },
+  "Flag: RESOURCE": {
+    "prefix": "{RESOURCE}",
+    "body": "{RESOURCE}",
+    "description": "References the 'resource' variable"
+  },
+  "Flag: RUN": {
+    "prefix": "{RUN}",
+    "body": "{RUN}",
+    "description": "References the 'run' variable"
+  },
+  "Flag: COMPILATOR": {
+    "prefix": "{COMPILATOR}",
+    "body": "{COMPILATOR}",
+    "description": "References the 'compilator' variable"
+  },
+  "Flag: COMPILATOR32": {
+    "prefix": "{COMPILATOR32}",
+    "body": "{COMPILATOR32}",
+    "description": "References the 'compilator32' variable"
+  },
+  "Flag: LIBS": {
+    "prefix": "{LIBS}",
+    "body": "{LIBS}",
+    "description": "References the 'libs' variable"
+  },
+  "Flag: LIBS32": {
+    "prefix": "{LIBS32}",
+    "body": "{LIBS32}",
+    "description": "References the 'libs32' variable"
+  },
+  "Flag: INCLUDE": {
+    "prefix": "{INCLUDE}",
+    "body": "{INCLUDE}",
+    "description": "References the 'include' variable"
+  },
+  "Flag: INCLUDE32": {
+    "prefix": "{INCLUDE32}",
+    "body": "{INCLUDE32}",
+    "description": "References the 'include32' variable"
+  },
+  "Flag: FLAGS": {
+    "prefix": "{FLAGS}",
+    "body": "{FLAGS}",
+    "description": "References the 'flags' variable"
+  },
+  "Flag: FLAGS32": {
+    "prefix": "{FLAGS32}",
+    "body": "{FLAGS32}",
+    "description": "References the 'flags32' variable"
+  },
+  "Flag: LINK": {
+    "prefix": "{LINK}",
+    "body": "{LINK}",
+    "description": "References the 'link' variable"
+  },
+  "Flag: LINK32": {
+    "prefix": "{LINK32}",
+    "body": "{LINK32}",
+    "description": "References the 'link32' variable"
+  },
+  "Flag: COMPILATOR_FOL": {
+    "prefix": "{COMPILATOR_FOL}",
+    "body": "{COMPILATOR_FOL}",
+    "description": "Path to the Rinegine compiler folder"
+  },
+  "Flag: COMPILATOR_FOL32": {
+    "prefix": "{COMPILATOR_FOL32}",
+    "body": "{COMPILATOR_FOL32}",
+    "description": "Path to the Rinegine 32-bit compiler folder"
+  },
+  "Flag: PROJECT_FOL": {
+    "prefix": "{PROJECT_FOL}",
+    "body": "{PROJECT_FOL}",
+    "description": "Path to your project"
+  }
+}
