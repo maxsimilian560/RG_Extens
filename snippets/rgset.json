@@ -226,12 +226,12 @@
   },
   "Variable: compilator": {
     "prefix": "compilator",
-    "body": "compilator = \"{RINEGINE_FOL}\\\\compiler\\\\mingw64\\\\bin\\\\g++\"",
+    "body": "compilator = \"{RINEGINE_FOL}/compiler/mingw64/bin/g++\"",
     "description": "Path to the 64-bit compiler"
   },
   "Variable: compilator32": {
     "prefix": "compilator32",
-    "body": "compilator32 = \"{RINEGINE_FOL}\\\\compiler\\\\mingw32\\\\bin\\\\g++\"",
+    "body": "compilator32 = \"{RINEGINE_FOL}/compiler/mingw32/bin/g++\"",
     "description": "Path to the 32-bit compiler"
   },
   "Variable: libs": {

@@ -26,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
     let buildEngine32 = vscode.commands.registerCommand('rg-extens.buildEngine32', () => {
         const rineginePath = vscode.workspace.getConfiguration().get('rg-extens.rineginePath') as string;
         if (rineginePath && isValidRineginePath(rineginePath)) {
-            cp.exec(`${rineginePath}\\bin\\rgcmd32.exe`, (err, stdout, stderr) => {
+            cp.exec(`${rineginePath}/bin/rgcmd32.exe`, (err, stdout, stderr) => {
                 if (err) {
                     vscode.window.showErrorMessage(`Ошибка: ${stderr}`);
                     return;
@@ -40,7 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
 		/*let buildEngine64 = vscode.commands.registerCommand('rg-extens.buildEngine', () => {
 			const rineginePath = vscode.workspace.getConfiguration().get('rg-extens.rineginePath') as string;
 			if (rineginePath && isValidRineginePath(rineginePath)) {
-					cp.exec(`${rineginePath}\\bin\\rgcmd.exe`, (err, stdout, stderr) => {
+					cp.exec(`${rineginePath}/bin/rgcmd.exe`, (err, stdout, stderr) => {
 							if (err) {
 									vscode.window.showErrorMessage(`Ошибка: ${stderr}`);
 									return;
@@ -57,7 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
 					const workspaceFolders = vscode.workspace.workspaceFolders;
 					if (workspaceFolders) {
 							const projectRoot = workspaceFolders[0].uri.fsPath;
-							cp.exec(`${rineginePath}\\bin\\rgcmd.exe`, { cwd: projectRoot }, (err, stdout, stderr) => {
+							cp.exec(`${rineginePath}/bin/rgcmd.exe`, { cwd: projectRoot }, (err, stdout, stderr) => {
 									if (err) {
 											vscode.window.showErrorMessage(`Ошибка: ${stderr}`);
 											vscode.window.showErrorMessage(`Выход: ${stdout}`);
@@ -81,7 +81,7 @@ export function activate(context: vscode.ExtensionContext) {
 					const workspaceFolders = vscode.workspace.workspaceFolders;
 					if (workspaceFolders) {
 							const projectRoot = workspaceFolders[0].uri.fsPath;
-							cp.exec(`${rineginePath}\\bin\\rgcmd32.exe`, { cwd: projectRoot }, (err, stdout, stderr) => {
+							cp.exec(`${rineginePath}/bin/rgcmd32.exe`, { cwd: projectRoot }, (err, stdout, stderr) => {
 									if (err) {
 											vscode.window.showErrorMessage(`Ошибка: ${stderr}`);
 											vscode.window.showErrorMessage(`Выход: ${stdout}`);
@@ -112,7 +112,7 @@ export function activate(context: vscode.ExtensionContext) {
 					const workspaceFolders = vscode.workspace.workspaceFolders;
 					if (workspaceFolders) {
 							//const projectRoot = workspaceFolders[0].uri.fsPath;
-							const buildCommand = `${rineginePath}\\bin\\rgcmd.exe`;
+							const buildCommand = `${rineginePath}/bin/rgcmd.exe`;
 							const fullCommand = `"${buildCommand}"`; // Команда для 64-битной сборки
 							runBuildCommand(`${buildCommand}`); // Выполняем команду в терминале из корня проекта
 					} else {
@@ -130,7 +130,7 @@ export function activate(context: vscode.ExtensionContext) {
 					const workspaceFolders = vscode.workspace.workspaceFolders;
 					if (workspaceFolders) {
 							//const projectRoot = workspaceFolders[0].uri.fsPath;
-							const buildCommand = `${rineginePath}\\bin\\rgcmd32.exe`;
+							const buildCommand = `${rineginePath}/bin/rgcmd32.exe`;
 							runBuildCommand(`${buildCommand}`); // Выполняем команду в терминале из корня проекта
 					} else {
 							vscode.window.showErrorMessage('Проект не открыт.');
@@ -194,12 +194,12 @@ function showRineginePathNotification() {
             await vscode.workspace.getConfiguration().update('rg-extens.rineginePath', rineginePath, vscode.ConfigurationTarget.Global);
             vscode.window.showInformationMessage(`Путь до Rinegine сохранен: ${rineginePath}`);
         } else {
-            vscode.window.showErrorMessage('Выбранный путь должен заканчиваться на \\Rinegine\\ или \\Rinegine.');
+            vscode.window.showErrorMessage('Выбранный путь должен заканчиваться на /Rinegine/ или /Rinegine.');
             showRineginePathNotification(); // Показать уведомление заново
         }
     } else {
         const manualPath = await vscode.window.showInputBox({
-            prompt: "Введите путь до движка Rinegine (должен заканчиваться на \\Rinegine\\ или \\Rinegine)",
+            prompt: "Введите путь до движка Rinegine (должен заканчиваться на /Rinegine/ или /Rinegine)",
             value: process.env['RINEGINE'] || ''
         });
 
@@ -207,7 +207,7 @@ function showRineginePathNotification() {
             await vscode.workspace.getConfiguration().update('rg-extens.rineginePath', manualPath, vscode.ConfigurationTarget.Global);
             vscode.window.showInformationMessage(`Путь до Rinegine сохранен: ${manualPath}`);
         } else {
-            vscode.window.showErrorMessage('Указанный путь неверен. Путь должен заканчиваться на \\Rinegine\\ или \\Rinegine.');
+            vscode.window.showErrorMessage('Указанный путь неверен. Путь должен заканчиваться на /Rinegine/ или /Rinegine.');
             showRineginePathNotification(); // Показать уведомление заново
         }
     }
@@ -238,7 +238,7 @@ async function promptForRineginePath() {
 							}
 					}
 			} else {
-					vscode.window.showErrorMessage('Указанный путь неверен. Путь должен заканчиваться на \\Rinegine\\ или \\Rinegine.');
+					vscode.window.showErrorMessage('Указанный путь неверен. Путь должен заканчиваться на /Rinegine/ или /Rinegine.');
 					showRineginePathNotification(); // Показать уведомление заново
 			}
 	} else {
@@ -277,7 +277,7 @@ async function promptForRineginePath() {
 			}
 		} else {
 			// Неверный путь, уведомление об ошибке
-			vscode.window.showErrorMessage('Указанный путь неверен. Путь должен заканчиваться на \\Rinegine\\ или \\Rinegine.');
+			vscode.window.showErrorMessage('Указанный путь неверен. Путь должен заканчиваться на /Rinegine/ или /Rinegine.');
 			// Повторно показываем уведомление о необходимости выбора пути
 			showRineginePathNotification();
 		}
@@ -291,7 +291,7 @@ async function promptForRineginePath() {
 
 // Проверка, что путь корректен (заканчивается на \Rinegine\ или \Rinegine)
 function isValidRineginePath(rineginePath: string): boolean {
-    return rineginePath.endsWith('\\Rinegine') || rineginePath.endsWith('\\Rinegine\\');
+    return rineginePath.endsWith('/Rinegine') || rineginePath.endsWith('/Rinegine/');
 }
 
 export function deactivate() {}

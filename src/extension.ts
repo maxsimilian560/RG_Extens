@@ -1,18 +1,26 @@
 import * as vscode from "vscode";
 
-const isWindows = process.platform === 'win32';
-const isLinux = process.platform === 'linux';
-const isMac = process.platform === 'darwin';
+const isWindows = process.platform === "win32";
+const isLinux = process.platform === "linux";
+const isMac = process.platform === "darwin";
 let OS = 0;
-if (isWindows) { OS = 0; } else if (isLinux) { OS = 1; } else if (isMac) { OS = 2; }
+if (isWindows) {
+  OS = 0;
+} else if (isLinux) {
+  OS = 1;
+} else if (isMac) {
+  OS = 2;
+} else {
+  OS = 3;
+}
 
 function showTemporaryMessage(message: string, duration: number) {
   const messageItem = vscode.window.showInformationMessage(message);
   setTimeout(() => {
     if (messageItem) {
-      messageItem.then(item => {
+      messageItem.then((item) => {
         if (item) {
-          vscode.commands.executeCommand('workbench.action.closeMessages');
+          vscode.commands.executeCommand("workbench.action.closeMessages");
         }
       });
     }
@@ -29,31 +37,32 @@ async function updateIncludePath(rgpath = "") {
   const rineginePath = "${config:rg-extens.rineginePath}";
   let countReady = 0;
   let paths = [
-    rineginePath + '\\',
-    rineginePath + '\\include\\64',
-    rineginePath + '\\include\\64\\GLFW',
-    rineginePath + '\\include\\64\\FreeType',
-    rineginePath + '\\include\\64\\FreeType\\freetype2',
-    rineginePath + '\\include\\64\\33',
-    rineginePath + '\\include\\64\\stb_master ',
-    rineginePath + '\\include\\64\\OpenAL ',
-    rineginePath + '\\include\\64\\CURL',
-    rineginePath + '\\compiler\\mingw64\\lib\\gcc\\x86_64-w64-mingw32\\13.2.0\\include\\c++',
-    rineginePath + '\\compiler\\mingw64\\lib\\gcc\\x86_64-w64-mingw32\\13.2.0\\include\\c++\\x86_64-w64-mingw32'];
+    rineginePath + "/",
+    rineginePath + "/include/64",
+    rineginePath + "/include/64/GLFW",
+    rineginePath + "/include/64/FreeType",
+    rineginePath + "/include/64/FreeType/freetype2",
+    rineginePath + "/include/64/33",
+    rineginePath + "/include/64/stb_master ",
+    rineginePath + "/include/64/OpenAL ",
+    rineginePath + "/include/64/CURL",
+    rineginePath +
+      "/compiler/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++",
+    rineginePath +
+      "/compiler/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/x86_64-w64-mingw32",
+  ];
 
   for (let i = 0; i < paths.length; i++) {
     if (!includePaths.includes(paths[i])) {
       includePaths.push(paths[i]);
-    } else { countReady++; }
+    } else {
+      countReady++;
+    }
   }
 
   //for turn on all hints
   let compilerArgs = config.get<string[]>("default.compilerArgs") || [];
-  let args = [
-    '-DRG_ALL_MODULS',
-    '-DRG_ADDONS',
-    '-DRG_ALL_ADDONS'
-  ]
+  let args = ["-DRG_ALL_MODULS", "-DRG_ADDONS", "-DRG_ALL_ADDONS"];
   for (let i = 0; i < args.length; i++) {
     if (!compilerArgs.includes(args[i])) {
       compilerArgs.push(args[i]);
@@ -69,7 +78,13 @@ async function updateIncludePath(rgpath = "") {
   } else if (countReady == 0) {
     vscode.window.showInformationMessage("Все необходимые пути добавлены!");
   } else if (countReady > 0 && countReady < paths.length) {
-    vscode.window.showInformationMessage("Было добавлено " + (paths.length - countReady) + "/" + paths.length + " путей, остальные уже были добавлены.");
+    vscode.window.showInformationMessage(
+      "Было добавлено " +
+        (paths.length - countReady) +
+        "/" +
+        paths.length +
+        " путей, остальные уже были добавлены."
+    );
   }
   await config.update(
     "default.includePath",
@@ -77,7 +92,6 @@ async function updateIncludePath(rgpath = "") {
     vscode.ConfigurationTarget.Global
   );
 }
-
 
 export function activate(context: vscode.ExtensionContext) {
   const rineginePath = vscode.workspace
@@ -99,7 +113,9 @@ export function activate(context: vscode.ExtensionContext) {
 
   function runBuildCommand(command: string) {
     const terminalName = "RG Build";
-    let rgTerminal = vscode.window.terminals.find(term => term.name === terminalName);
+    let rgTerminal = vscode.window.terminals.find(
+      (term) => term.name === terminalName
+    );
     if (!rgTerminal) {
       rgTerminal = vscode.window.createTerminal(terminalName);
       rgTerminal.show();
@@ -119,7 +135,12 @@ export function activate(context: vscode.ExtensionContext) {
       if (rineginePath && isValidRineginePath(rineginePath)) {
         const workspaceFolders = vscode.workspace.workspaceFolders;
         if (workspaceFolders) {
-          const buildCommand = `${rineginePath}\\bin\\rgcmd.exe`;
+          let buildCommand = `${rineginePath}/bin/rgcmd`;
+          if (OS == 0) buildCommand = `${rineginePath}/bin/rgcmd.exe`;
+          else if (OS == 1) buildCommand = `${rineginePath}/bin/rgcmd`;
+          else {
+            vscode.window.showErrorMessage("OC not supported.");
+          }
           const fullCommand = `"${buildCommand}"`;
           runBuildCommand(`${buildCommand}`);
         } else {
@@ -142,7 +163,13 @@ export function activate(context: vscode.ExtensionContext) {
       if (rineginePath && isValidRineginePath(rineginePath)) {
         const workspaceFolders = vscode.workspace.workspaceFolders;
         if (workspaceFolders) {
-          const buildCommand = `${rineginePath}\\bin\\rgcmd32.exe`;
+          // const buildCommand = `${rineginePath}/bin/rgcmd32.exe`;
+          let buildCommand = `${rineginePath}/bin/rgcmd32`;
+          if (OS == 0) buildCommand = `${rineginePath}/bin/rgcmd32.exe`;
+          else if (OS == 1) buildCommand = `${rineginePath}/bin/rgcmd32`;
+          else {
+            vscode.window.showErrorMessage("OC not supported.");
+          }
           runBuildCommand(`${buildCommand}`);
         } else {
           vscode.window.showErrorMessage("Проект не открыт.");
@@ -175,56 +202,113 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(debugDeleteRinegineVariable);
 
   context.subscriptions.push(
-    vscode.languages.registerCompletionItemProvider('rgset', {
-      provideCompletionItems(document, position) {
-        const linePrefix = document.lineAt(position).text.substr(0, position.character);
-        const completions: vscode.CompletionItem[] = [];
+    vscode.languages.registerCompletionItemProvider(
+      "rgset",
+      {
+        provideCompletionItems(document, position) {
+          const linePrefix = document
+            .lineAt(position)
+            .text.substr(0, position.character);
+          const completions: vscode.CompletionItem[] = [];
 
-        if (linePrefix.match(/mode\s*{/)) {
-          const modes = [
-            'console', 'other_cmd', 'utf', 'createlib', 'debug',
-            'shared', 'static', 'asm', 'clear'
-          ];
-          modes.forEach(mode => {
-            const item = new vscode.CompletionItem(mode, vscode.CompletionItemKind.Keyword);
-            item.detail = `Mode: ${mode}`;
+          if (linePrefix.match(/mode\s*{/)) {
+            const modes = [
+              "console",
+              "other_cmd",
+              "utf",
+              "createlib",
+              "debug",
+              "shared",
+              "static",
+              "asm",
+              "clear",
+            ];
+            modes.forEach((mode) => {
+              const item = new vscode.CompletionItem(
+                mode,
+                vscode.CompletionItemKind.Keyword
+              );
+              item.detail = `Mode: ${mode}`;
+              completions.push(item);
+            });
+          }
+
+          if (linePrefix.match(/var\s*{/)) {
+            const variables = [
+              "name",
+              "name32",
+              "bit",
+              "resource",
+              "source",
+              "run",
+              "compilator",
+              "compilator32",
+              "libs",
+              "libs32",
+              "include",
+              "include32",
+              "flags",
+              "flags32",
+              "link",
+              "link32",
+              "extension",
+            ];
+            variables.forEach((variable) => {
+              const item = new vscode.CompletionItem(
+                `${variable} = `,
+                vscode.CompletionItemKind.Variable
+              );
+              item.detail = `Variable: ${variable}`;
+              completions.push(item);
+            });
+          }
+
+          ["true", "false", "32", "64", "all"].forEach((value) => {
+            const item = new vscode.CompletionItem(
+              value,
+              vscode.CompletionItemKind.Value
+            );
+            item.detail = `Value: ${value}`;
             completions.push(item);
           });
-        }
 
-        if (linePrefix.match(/var\s*{/)) {
-          const variables = [
-            'name', 'name32', 'bit', 'resource', 'source', 'run',
-            'compilator', 'compilator32', 'libs', 'libs32', 'include',
-            'include32', 'flags', 'flags32', 'link', 'link32', 'extension'
+          const flags = [
+            "RINEGINE_FOL",
+            "NAME",
+            "BIT",
+            "SOURCE",
+            "NAME32",
+            "RESOURCE",
+            "RUN",
+            "COMPILATOR",
+            "COMPILATOR32",
+            "LIBS",
+            "LIBS32",
+            "INCLUDE",
+            "INCLUDE32",
+            "FLAGS",
+            "FLAGS32",
+            "LINK",
+            "LINK32",
+            "COMPILATOR_FOL",
+            "COMPILATOR_FOL32",
+            "PROJECT_FOL",
           ];
-          variables.forEach(variable => {
-            const item = new vscode.CompletionItem(`${variable} = `, vscode.CompletionItemKind.Variable);
-            item.detail = `Variable: ${variable}`;
+          flags.forEach((flag) => {
+            const item = new vscode.CompletionItem(
+              `{${flag}}`,
+              vscode.CompletionItemKind.Variable
+            );
+            item.detail = `Flag: ${flag}`;
             completions.push(item);
           });
-        }
 
-        ['true', 'false', '32', '64', 'all'].forEach(value => {
-          const item = new vscode.CompletionItem(value, vscode.CompletionItemKind.Value);
-          item.detail = `Value: ${value}`;
-          completions.push(item);
-        });
-
-        const flags = [
-          'RINEGINE_FOL', 'NAME', 'BIT', 'SOURCE', 'NAME32', 'RESOURCE', 'RUN',
-          'COMPILATOR', 'COMPILATOR32', 'LIBS', 'LIBS32', 'INCLUDE', 'INCLUDE32',
-          'FLAGS', 'FLAGS32', 'LINK', 'LINK32', 'COMPILATOR_FOL', 'COMPILATOR_FOL32', 'PROJECT_FOL'
-        ];
-        flags.forEach(flag => {
-          const item = new vscode.CompletionItem(`{${flag}}`, vscode.CompletionItemKind.Variable);
-          item.detail = `Flag: ${flag}`;
-          completions.push(item);
-        });
-
-        return completions;
-      }
-    }, ' ', '\t')
+          return completions;
+        },
+      },
+      " ",
+      "\t"
+    )
   );
 }
 
@@ -263,7 +347,6 @@ async function promptForRineginePath() {
           `Путь до Rinegine сохранен: ${manualPath}`
         );
         updateIncludePath("rineginePath");
-
       } catch (error) {
         if (error instanceof Error) {
           vscode.window.showErrorMessage(
@@ -293,12 +376,21 @@ async function promptForRineginePath() {
 function isValidRineginePath(rineginePath: string): boolean {
   if (isWindows) {
     return (
-      rineginePath.endsWith("\\Rinegine") || rineginePath.endsWith("\\Rinegine\\") || rineginePath.endsWith("/Rinegine") || rineginePath.endsWith("/Rinegine/")
+      rineginePath.endsWith("\\Rinegine") ||
+      rineginePath.endsWith("\\Rinegine\\") ||
+      rineginePath.endsWith("/Rinegine") ||
+      rineginePath.endsWith("/Rinegine/")
+      // rineginePath.endsWith("/Rinegine") || rineginePath.endsWith("/Rinegine/") || rineginePath.endsWith("/Rinegine") || rineginePath.endsWith("/Rinegine/")
     );
-  }
-  else if (isLinux) {
+  } else if (isLinux) {
     return (
-      rineginePath.endsWith("\\\\Rinegine") || rineginePath.endsWith("\\\\Rinegine\\\\") || rineginePath.endsWith("/Rinegine") || rineginePath.endsWith("/Rinegine/")
+      rineginePath.endsWith("\\Rinegine") ||
+      rineginePath.endsWith("\\Rinegine\\") ||
+      rineginePath.endsWith("\\\\Rinegine") ||
+      rineginePath.endsWith("\\\\Rinegine\\\\") ||
+      rineginePath.endsWith("/Rinegine") ||
+      rineginePath.endsWith("/Rinegine/")
+      // rineginePath.endsWith("//Rinegine") || rineginePath.endsWith("//Rinegine//") || rineginePath.endsWith("/Rinegine") || rineginePath.endsWith("/Rinegine/")
     );
   } else if (isMac) {
     console.log("Mac is not supported yet");
@@ -309,4 +401,4 @@ function isValidRineginePath(rineginePath: string): boolean {
   return false;
 }
 
-export function deactivate() { }
+export function deactivate() {}
