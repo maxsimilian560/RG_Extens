@@ -3,7 +3,7 @@
   "name": "rg-extens",
   "displayName": "RG_Extens",
   "description": "Extension for the Rinegine engine. Adds syntax for core engine files such as rgset and rgobj. This also helps configure VS code to work correctly with Rinegine",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "engines": {
     "vscode": "^1.108.0"
   },
@@ -27,6 +27,16 @@
           "type": "string",
           "default": "",
           "description": "Path to the Rinegine engine."
+        },
+        "rg-extens.focusTerminalOnBuild": {
+        "type": "boolean",
+        "default": true,
+        "description": "Move focus to terminal when running build."
+        },
+        "rg-extens.openTerminalOnBuild": {
+        "type": "boolean",
+        "default": true,
+        "description": "Open terminal when running build."
         }
       }
     },

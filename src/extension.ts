@@ -40,9 +40,10 @@ async function updateIncludePath(rgpath = "") {
   includePaths = includePaths.filter(p => !p.includes("${config:rg-extens.rineginePath}"));
   let paths = [
     rineginePath + "/",
-    rineginePath + "/include/" + (OS === 0 ? "win" : OS === 1 ? "linux" : OS === 2 ? "mac" : "") + "/freetype2",
-    rineginePath + "/include/" + (OS === 0 ? "win" : OS === 1 ? "linux" : OS === 2 ? "mac" : "") + "/GLFW",
-    rineginePath + "/include/" + (OS === 0 ? "win" : OS === 1 ? "linux" : OS === 2 ? "mac" : "") + "/stb",
+    rineginePath + "/include/" + (OS === 0 ? "win" : OS === 1 ? "linux" : OS === 2 ? "mac" : "") + "/",
+    // rineginePath + "/include/" + (OS === 0 ? "win" : OS === 1 ? "linux" : OS === 2 ? "mac" : "") + "/freetype2",
+    // rineginePath + "/include/" + (OS === 0 ? "win" : OS === 1 ? "linux" : OS === 2 ? "mac" : "") + "/GLFW",
+    // rineginePath + "/include/" + (OS === 0 ? "win" : OS === 1 ? "linux" : OS === 2 ? "mac" : "") + "/stb",
   ];
   for (let i = 0; i < paths.length; i++) {
     if (!includePaths.includes(paths[i])) {
@@ -104,16 +105,24 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   function runBuildCommand(command: string) {
+    const config = vscode.workspace.getConfiguration("rg-extens");
+    const focusTerminal = config.get<boolean>("focusTerminalOnBuild", true);
+    const openTerminal = config.get<boolean>("openTerminalOnBuild", true);
     const terminalName = "RG Build";
     let rgTerminal = vscode.window.terminals.find(
       (term) => term.name === terminalName
     );
     if (!rgTerminal) {
       rgTerminal = vscode.window.createTerminal(terminalName);
-      rgTerminal.show();
+      if (openTerminal) {
+        rgTerminal.show(!focusTerminal);
+      }
       vscode.window.showInformationMessage(`Терминал ${terminalName} создан.`);
     }
-    rgTerminal.sendText(command);
+    rgTerminal.sendText(command, true);
+    if (openTerminal) {
+      rgTerminal.show(!focusTerminal);
+    }
   }
 
   let buildEngine64 = vscode.commands.registerCommand(
@@ -131,7 +140,7 @@ export function activate(context: vscode.ExtensionContext) {
           if (OS == 0) buildCommand = `${rineginePath}/bin/rgcmd.exe`;
           else if (OS == 1) buildCommand = `${rineginePath}/bin/rgcmd`;
           else {
-            vscode.window.showErrorMessage("OC not supported.");
+            vscode.window.showErrorMessage("OS not supported.");
           }
           const fullCommand = `"${buildCommand}"`;
           runBuildCommand(`${buildCommand}`);
@@ -159,7 +168,7 @@ export function activate(context: vscode.ExtensionContext) {
           if (OS == 0) buildCommand = `${rineginePath}/bin/rgcmd32.exe`;
           else if (OS == 1) buildCommand = `${rineginePath}/bin/rgcmd32`;
           else {
-            vscode.window.showErrorMessage("OC not supported.");
+            vscode.window.showErrorMessage("OS not supported.");
           }
           runBuildCommand(`${buildCommand}`);
         } else {
