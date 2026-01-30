@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.8] - 2026-01-30
+
+### Changed
+
+- Updated @types/node from 22.15.11 to 25.1.0
+- Updated @types/vscode from 1.99.1 to 1.108.1
+- Updated @typescript-eslint/eslint-plugin from 8.32.0 to 8.54.0
+- Updated @typescript-eslint/parser from 8.32.0 to 8.54.0
+- Updated @vscode/test-cli from 0.0.10 to 0.0.12
+- Updated eslint from 9.26.0 to 9.39.2
+- Updated js-yaml to 4.1.1
+- Updated glob to 10.5.0
+- Updated qs to 6.14.1
+- Updated @modelcontextprotocol/sdk to 1.24.0
+- Updated diff to 8.0.3
+- The buildEngine function has been changed to buildEngine64
+- The debugDeleteRinegineVariable function has been changed to deleteRinegineVariable
+- The deleteRinegineVariable function now removes paths in includePath from the C/C++ extension
+- Now the updateIncludePath function removes irrelevant paths
+- Changed paths to comply with the Rinegine WIP branch
+
 ## [0.1.7] - 2025-07-31
 
 ### Fixed

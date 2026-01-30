@@ -30,28 +30,20 @@ function showTemporaryMessage(message: string, duration: number) {
 async function updateIncludePath(rgpath = "") {
   const config = vscode.workspace.getConfiguration("C_Cpp");
   let includePaths = config.get<string[]>("default.includePath") || [];
+
   if (!rgpath) {
-    vscode.window.showInformationMessage(`Error Code 404`);
+    vscode.window.showErrorMessage("Rinegine path is not configured.");
     return;
   }
   const rineginePath = "${config:rg-extens.rineginePath}";
   let countReady = 0;
+  includePaths = includePaths.filter(p => !p.includes("${config:rg-extens.rineginePath}"));
   let paths = [
     rineginePath + "/",
-    rineginePath + "/include/64",
-    rineginePath + "/include/64/GLFW",
-    rineginePath + "/include/64/FreeType",
-    rineginePath + "/include/64/FreeType/freetype2",
-    rineginePath + "/include/64/33",
-    rineginePath + "/include/64/stb_master ",
-    rineginePath + "/include/64/OpenAL ",
-    rineginePath + "/include/64/CURL",
-    rineginePath +
-      "/compiler/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++",
-    rineginePath +
-      "/compiler/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/x86_64-w64-mingw32",
+    rineginePath + "/include/" + (OS === 0 ? "win" : OS === 1 ? "linux" : OS === 2 ? "mac" : "") + "/freetype2",
+    rineginePath + "/include/" + (OS === 0 ? "win" : OS === 1 ? "linux" : OS === 2 ? "mac" : "") + "/GLFW",
+    rineginePath + "/include/" + (OS === 0 ? "win" : OS === 1 ? "linux" : OS === 2 ? "mac" : "") + "/stb",
   ];
-
   for (let i = 0; i < paths.length; i++) {
     if (!includePaths.includes(paths[i])) {
       includePaths.push(paths[i]);
@@ -80,10 +72,10 @@ async function updateIncludePath(rgpath = "") {
   } else if (countReady > 0 && countReady < paths.length) {
     vscode.window.showInformationMessage(
       "Было добавлено " +
-        (paths.length - countReady) +
-        "/" +
-        paths.length +
-        " путей, остальные уже были добавлены."
+      (paths.length - countReady) +
+      "/" +
+      paths.length +
+      " путей, остальные уже были добавлены."
     );
   }
   await config.update(
@@ -125,7 +117,7 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   let buildEngine64 = vscode.commands.registerCommand(
-    "rg-extens.buildEngine",
+    "rg-extens.buildEngine64",
     () => {
       const rineginePath = vscode.workspace
         .getConfiguration()
@@ -163,7 +155,6 @@ export function activate(context: vscode.ExtensionContext) {
       if (rineginePath && isValidRineginePath(rineginePath)) {
         const workspaceFolders = vscode.workspace.workspaceFolders;
         if (workspaceFolders) {
-          // const buildCommand = `${rineginePath}/bin/rgcmd32.exe`;
           let buildCommand = `${rineginePath}/bin/rgcmd32`;
           if (OS == 0) buildCommand = `${rineginePath}/bin/rgcmd32.exe`;
           else if (OS == 1) buildCommand = `${rineginePath}/bin/rgcmd32`;
@@ -180,16 +171,27 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  let debugDeleteRinegineVariable = vscode.commands.registerCommand(
-    "rg-extens.debugDeleteRinegineVariable",
+  let deleteRinegineVariable = vscode.commands.registerCommand(
+    "rg-extens.deleteRinegineVariable",
     async () => {
       try {
+        const config = vscode.workspace.getConfiguration("C_Cpp");
+        let includePaths = config.get<string[]>("default.includePath") || [];
+        includePaths = includePaths.filter(p => !p.includes("${config:rg-extens.rineginePath}"));
+        await config.update(
+          "default.includePath",
+          includePaths,
+          vscode.ConfigurationTarget.Global
+        );
         await vscode.workspace
           .getConfiguration("rg-extens")
           .update("rineginePath", undefined, vscode.ConfigurationTarget.Global);
+
         vscode.window.showInformationMessage(
           "Переменная RineginePath успешно сброшена."
         );
+
+
       } catch (error) {
         vscode.window.showErrorMessage("Ошибка при сбросе пути Rinegine.");
       }
@@ -199,7 +201,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(setRineginePath);
   context.subscriptions.push(buildEngine64);
   context.subscriptions.push(buildEngine32);
-  context.subscriptions.push(debugDeleteRinegineVariable);
+  context.subscriptions.push(deleteRinegineVariable);
 
   context.subscriptions.push(
     vscode.languages.registerCompletionItemProvider(
@@ -380,7 +382,6 @@ function isValidRineginePath(rineginePath: string): boolean {
       rineginePath.endsWith("\\Rinegine\\") ||
       rineginePath.endsWith("/Rinegine") ||
       rineginePath.endsWith("/Rinegine/")
-      // rineginePath.endsWith("/Rinegine") || rineginePath.endsWith("/Rinegine/") || rineginePath.endsWith("/Rinegine") || rineginePath.endsWith("/Rinegine/")
     );
   } else if (isLinux) {
     return (
@@ -390,7 +391,6 @@ function isValidRineginePath(rineginePath: string): boolean {
       rineginePath.endsWith("\\\\Rinegine\\\\") ||
       rineginePath.endsWith("/Rinegine") ||
       rineginePath.endsWith("/Rinegine/")
-      // rineginePath.endsWith("//Rinegine") || rineginePath.endsWith("//Rinegine//") || rineginePath.endsWith("/Rinegine") || rineginePath.endsWith("/Rinegine/")
     );
   } else if (isMac) {
     console.log("Mac is not supported yet");
@@ -401,4 +401,4 @@ function isValidRineginePath(rineginePath: string): boolean {
   return false;
 }
 
-export function deactivate() {}
+export function deactivate() { }
