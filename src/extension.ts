@@ -40,7 +40,8 @@ async function updateIncludePath(rgpath = "") {
   includePaths = includePaths.filter(p => !p.includes("${config:rg-extens.rineginePath}"));
   let paths = [
     rineginePath + "/",
-    rineginePath + "/include/" + (OS === 0 ? "win" : OS === 1 ? "linux" : OS === 2 ? "mac" : "") + "/",
+    rineginePath + "/include/cross/",
+    rineginePath + "/include/" + (OS === 0 ? "win" : OS === 1 ? "linux" : OS === 2 ? "mac" : "") + "/"
     // rineginePath + "/include/" + (OS === 0 ? "win" : OS === 1 ? "linux" : OS === 2 ? "mac" : "") + "/freetype2",
     // rineginePath + "/include/" + (OS === 0 ? "win" : OS === 1 ? "linux" : OS === 2 ? "mac" : "") + "/GLFW",
     // rineginePath + "/include/" + (OS === 0 ? "win" : OS === 1 ? "linux" : OS === 2 ? "mac" : "") + "/stb",
